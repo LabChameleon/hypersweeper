@@ -52,9 +52,7 @@ def df_to_config(configspace, row):
 
 def dict_to_config(configspace, row):
     """Convert a dict row to a configspace configuration."""
-    for key in row:
-        if np.isnan(row[key]):
-            row.pop(key)
+    row = {key: value for key, value in row.items() if not np.isnan(value)}
     return Configuration(configspace, row)
 
 
