@@ -158,8 +158,7 @@ class LPI:
 
             if num_neighbors == 0:
                 continue
-            elif np.isinf(num_neighbors):
-                assert isinstance(hp, NumericalHyperparameter)
+            elif isinstance(hp, NumericalHyperparameter):
                 if hp.log:
                     base = np.e
                     log_lower = np.log(hp.lower) / np.log(base)

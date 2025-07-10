@@ -118,6 +118,9 @@ def make_smac(configspace, smac_args):
     if "intensifier" in smac_args:
         smac_kwargs["intensifier"] = smac_args["intensifier"](scenario)
 
+    if "random_design" in smac_args:
+        smac_kwargs["random_design"] = smac_args["random_design"]()
+
     smac = smac_args["smac_facade"](scenario, dummy_func, **smac_kwargs)
     return HyperSMACAdapter(smac)
 

@@ -174,7 +174,7 @@ class HypersweeperSweeper:
 
         if warmstart_file:
             self.warmstart_data = read_warmstart_data(
-                warmstart_filename=warmstart_file, 
+                warmstart_filename=warmstart_file,
                 search_space=self.configspace,
                 maximize=self.maximize,
             )
