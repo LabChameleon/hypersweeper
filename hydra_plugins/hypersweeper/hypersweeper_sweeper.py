@@ -17,6 +17,8 @@ from omegaconf import DictConfig, OmegaConf
 
 from hydra_plugins.hypersweeper.utils import Info, Result, read_warmstart_data
 
+from submitit.core import utils
+
 if TYPE_CHECKING:
     from ConfigSpace import Configuration, ConfigurationSpace
     from hydra.plugins.launcher import Launcher
@@ -171,7 +173,11 @@ class HypersweeperSweeper:
         self.warmstart_data: list[tuple[Info, Result]] = []
 
         if warmstart_file:
-            self.warmstart_data = read_warmstart_data(warmstart_filename=warmstart_file, search_space=self.configspace)
+            self.warmstart_data = read_warmstart_data(
+                warmstart_filename=warmstart_file, 
+                search_space=self.configspace,
+                maximize=self.maximize,
+            )
 
         self.wandb_project = wandb_project
         if self.wandb_project:
@@ -270,8 +276,13 @@ class HypersweeperSweeper:
                 )
                 overrides.append(job_overrides)
 
-        # Run overrides
-        res = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
+        while True:
+            try:
+                res = self.launcher.launch(overrides, initial_job_idx=self.job_idx)
+                break
+            except utils.UncompletedJobError:
+                continue
+
         self.job_idx += len(overrides)
         if self.seeds:
             costs = [infos[i].budget for i in range(len(res) // len(self.seeds))]

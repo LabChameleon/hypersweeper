@@ -93,7 +93,13 @@ def make_smac(configspace, smac_args):
     if "config_selector" in smac_args:
         smac_kwargs["config_selector"] = smac_args["config_selector"](scenario=scenario)
 
-    import ipdb; ipdb.set_trace()
+    if "model" in smac_args:
+        smac_kwargs["model"] = smac_args["model"](
+            configspace=scenario.configspace,
+            instance_features=scenario.instance_features,
+            seed=scenario.seed,
+        )
+
     if "initial_design" in smac_args:
         if "warmstart_file" in smac_args["initial_design"]:
             config_list = read_additional_configs(
